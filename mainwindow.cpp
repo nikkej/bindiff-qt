@@ -25,8 +25,8 @@
 #include "ui_mainwindow.h"
 
 #include <QDebug>
-#include <QtGui/QFileDialog>
-#include <QtGui/QScrollBar>
+#include <QFileDialog>
+#include <QScrollBar>
 #include <sys/mman.h>
 //#include <ctype.h>
 
