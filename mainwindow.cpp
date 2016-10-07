@@ -152,8 +152,9 @@ void MainWindow::open( const QString& fileName , BinFileView* view )
             // Qt's QFileDevice::map doesn't eat original mmap flags, --> use 'real stuff' here!
             _diffMap = (uchar*)::mmap( 0, _diffMapSize, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0 );
 
-            if( !_diffMap )
+            if( !_diffMap ) {
                 qWarning() << "Mapping failed!!!!";
+            }
             else {
                 updateDiff( NULL );
                 QList<BinFileView*> views = _files.keys();
@@ -166,7 +167,7 @@ void MainWindow::open( const QString& fileName , BinFileView* view )
 
 void MainWindow::updateDiff( BinFileView* )
 {
-    if( _files.size() != 2 )
+    if( _files.size() != 2 || !_diffMap )
         return;
 
     qint64 addend1 = ui->binFileView1->addressAddend();
