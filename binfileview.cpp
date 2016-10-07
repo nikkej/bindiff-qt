@@ -121,7 +121,7 @@ void BinFileView::setData( const uchar* data, const qint64 size )
 void BinFileView::setColoringData( uchar* data )
 {
     _colorData = data;
-    viewport()->repaint();
+    viewport()->update();
 }
 
 void BinFileView::setAddressCharacters( const int chars )
