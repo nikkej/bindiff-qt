@@ -89,6 +89,11 @@ MainWindow::MainWindow( QWidget *parent ) :
     connect( ui->binFileView2, SIGNAL( fileViewContentChanged( BinFileView* ) ), \
              this, SLOT( updateDiff( BinFileView* ) ), Qt::DirectConnection );
 
+    // Get the arguments
+    if( QCoreApplication::arguments().size() == 3 ) {
+        open( QCoreApplication::arguments().at( 1 ), ui->binFileView1 );
+        open( QCoreApplication::arguments().at( 2 ), ui->binFileView2 );
+    }
 }
 
 MainWindow::~MainWindow()
