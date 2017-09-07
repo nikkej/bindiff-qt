@@ -46,6 +46,7 @@ BinFileView::BinFileView( QWidget* parent )
       _size( 0 ),
       _upperMask( 0xffff0000LL ),
       _lowerMask( 0x0000ffffLL ),
+      _addend( 0 ),
       _addressChars( 8 ),
       _lineCount( 0 ),
       _linesOnViewPort( 0 ),
@@ -208,12 +209,12 @@ void BinFileView::paintEvent( QPaintEvent* event )
     painter.drawLine( _addressAreaWidth + _hexAreaWidth - xOffset, event->rect().top(), _addressAreaWidth + _hexAreaWidth -xOffset, event->rect().height() );
 
     if( _lineCount ) {
-        qint64 addend = addressAddend();
+        //qint64 addend = addressAddend();
 
         int yIncr = fontMetrics().height();
         int yPos = yIncr;
         for( qint64 row( 0 ); row < qMin( _linesOnViewPort, _lineCount ); row++, yPos += yIncr ) {
-            qint64 addr = row * (qint64)_bytesPerLine + addend;
+            qint64 addr = row * (qint64)_bytesPerLine + _addend;
             QString addrString = QString( "%1:%2" ).arg( ( addr & _upperMask ) >> (4 * _addressChars / 2), _addressChars / 2, 16, QChar( '0' ) ).toUpper() \
                                                    .arg( addr & _lowerMask, _addressChars / 2, 16, QChar( '0' ) ).toUpper();
 
@@ -250,6 +251,7 @@ void BinFileView::paintEvent( QPaintEvent* event )
 
 void BinFileView::scrollContentsBy( int, int )
 {
+    _addend = addressAddend();
     emit fileViewContentChanged( this );
     viewport()->update();
 }

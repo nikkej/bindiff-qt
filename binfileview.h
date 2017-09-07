@@ -87,6 +87,7 @@ private: // Data
     qint64        _size;               // accessible file size
     qint64        _upperMask;          // masks for address area, address is drawn
     qint64        _lowerMask;          // like %0nX:%0nX where n is _addressChars / 2
+    qint64        _addend;
     int           _addressChars;       // # of characters on address field
     int           _lineCount;          // == division of size per # of bytes on one line
     int           _linesOnViewPort;    // # of lines viewport is capable to draw
