@@ -193,6 +193,7 @@ void BinFileView::resizeEvent( QResizeEvent* )
 
     verticalScrollBar()->setRange( 0, _lineCount - _linesOnViewPort );
     verticalScrollBar()->setPageStep( _linesOnViewPort );
+    verticalScrollBar()->setSliderPosition( _addend / _bytesPerLine );
 
     emit fileViewContentChanged( this );
 }
@@ -209,7 +210,7 @@ void BinFileView::paintEvent( QPaintEvent* event )
     painter.drawLine( _addressAreaWidth + _hexAreaWidth - xOffset, event->rect().top(), _addressAreaWidth + _hexAreaWidth -xOffset, event->rect().height() );
 
     if( _lineCount ) {
-        //qint64 addend = addressAddend();
+        _addend = addressAddend();
 
         int yIncr = fontMetrics().height();
         int yPos = yIncr;
@@ -251,7 +252,6 @@ void BinFileView::paintEvent( QPaintEvent* event )
 
 void BinFileView::scrollContentsBy( int, int )
 {
-    _addend = addressAddend();
     emit fileViewContentChanged( this );
     viewport()->update();
 }
