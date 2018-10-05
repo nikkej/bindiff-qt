@@ -35,13 +35,16 @@ class BinFileView : public QAbstractScrollArea
 
 public:
     enum Constants {
-        minimumOfByteGroups = 2,
-        bytesPerGroup = 4
+        bytesPerGroup = 4,
+        minimumOfByteGroups = 4,
+        minimumOfLines = 16
     };
 
     BinFileView( QWidget* parent = 0 );
     virtual ~BinFileView();
 
+    virtual QSize minimumSizeHint() const;
+    virtual QSize sizeHint() const;
     virtual void setFont( QFont );
     const uchar* data();
     void setData( const uchar*, const qint64 );
@@ -104,6 +107,8 @@ private: // Data
     int     _hexAreaWidth;
     int     _asciiAreaWidth;
     int     _groupGap;
+    // To fine tune widget paint area
+    int     _widgetFrameWidth;
 };
 
 #endif // BINFILEVIEW_H

@@ -49,8 +49,8 @@ BinFileView::BinFileView( QWidget* parent )
       _addend( 0 ),
       _addressChars( 8 ),
       _lineCount( 0 ),
-      _linesOnViewPort( 0 ),
-      _byteGroups( 2 ),
+      _linesOnViewPort( BinFileView::minimumOfLines ),
+      _byteGroups( BinFileView::minimumOfByteGroups ),
       _bytesPerLine( _byteGroups * BinFileView::bytesPerGroup ),
       _leftMargin( 0 ),
       _rightMargin( 0 ),
@@ -60,7 +60,8 @@ BinFileView::BinFileView( QWidget* parent )
       _addressAreaWidth( 0 ),
       _hexAreaWidth( 0 ),
       _asciiAreaWidth( 0 ),
-      _groupGap( 0 )
+      _groupGap( 0 ),
+      _widgetFrameWidth( 0 )
 {
     _contextMenu->addAction( _contextAction );
     connect( _contextAction, &QAction::triggered, [=](){ emit fileOpenRequested( this ); } );
@@ -72,10 +73,19 @@ BinFileView::~BinFileView()
 {
 }
 
+QSize BinFileView::minimumSizeHint() const
+{
+    return( QSize( preFitWidth( BinFileView::minimumOfByteGroups ) + _widgetFrameWidth * 2, fontMetrics().height() * BinFileView::minimumOfLines ) );
+}
+
+QSize BinFileView::sizeHint() const
+{
+    return( QSize( preFitWidth( _byteGroups ) + _widgetFrameWidth * 2, fontMetrics().height() * _linesOnViewPort ) );
+}
+
 void BinFileView::setFont( QFont font )
 {
     if( !font.fixedPitch() ) {
-        qWarning() << "Not a fixed pitch font!";
         font.setFixedPitch( true );
     }
 
@@ -185,6 +195,12 @@ void BinFileView::dropEvent( QDropEvent* event )
 void BinFileView::resizeEvent( QResizeEvent* )
 {
     _linesOnViewPort = ( viewport()->height() - _bottomMargin ) / fontMetrics().height();
+
+    if( _widgetFrameWidth != ( frameSize().rwidth() - viewport()->width() ) / 2 ) {
+        qWarning() << __FUNCTION__ << "frame size: " << frameSize().rwidth() << ", viewport width: " << viewport()->width();
+        _widgetFrameWidth = ( frameSize().rwidth() - viewport()->width() ) / 2;
+        updateGeometry();
+    }
 
     calculateNumOfByteGroups();
 
