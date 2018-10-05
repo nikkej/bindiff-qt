@@ -157,7 +157,7 @@ void BinFileView::synchronizeVisuals( BinFileView* view )
 
     calculateNumOfByteGroups();
 
-    horizontalScrollBar()->setRange( 0, preFitWholeLine( _byteGroups ) - viewport()->width() );
+    horizontalScrollBar()->setRange( 0, preFitWidth( _byteGroups ) - viewport()->width() );
     horizontalScrollBar()->setPageStep( viewport()->width() );
 
     viewport()->update();
@@ -188,7 +188,7 @@ void BinFileView::resizeEvent( QResizeEvent* )
 
     calculateNumOfByteGroups();
 
-    horizontalScrollBar()->setRange( 0, preFitWholeLine( _byteGroups ) - viewport()->width() );
+    horizontalScrollBar()->setRange( 0, preFitWidth( _byteGroups ) - viewport()->width() );
     horizontalScrollBar()->setPageStep( viewport()->width() );
 
     verticalScrollBar()->setRange( 0, _lineCount - _linesOnViewPort );
@@ -259,10 +259,10 @@ void BinFileView::scrollContentsBy( int, int )
 void BinFileView::calculateNumOfByteGroups()
 {
     // Calculate new # of byte groups
-    while( viewport()->width() > preFitWholeLine( _byteGroups + 1 ) || viewport()->width() < preFitWholeLine( _byteGroups ) ) {
-        if( viewport()->width() > preFitWholeLine( _byteGroups + 1 ) )
+    while( viewport()->width() > preFitWidth( _byteGroups + 1 ) || viewport()->width() < preFitWidth( _byteGroups ) ) {
+        if( viewport()->width() > preFitWidth( _byteGroups + 1 ) )
             adjust( ++_byteGroups );
-        else if( viewport()->width() < preFitWholeLine( _byteGroups ) && _byteGroups > BinFileView::minimumOfByteGroups )
+        else if( viewport()->width() < preFitWidth( _byteGroups ) && _byteGroups > BinFileView::minimumOfByteGroups )
             adjust( --_byteGroups );
         else {
             adjust( BinFileView::minimumOfByteGroups );
@@ -299,7 +299,7 @@ void BinFileView::adjust( const int newbyteGroups )
     _asciiAreaWidth = _bytesPerLine * fontMetrics().averageCharWidth() + _leftMargin + _rightMargin;
 }
 
-int BinFileView::preFitWholeLine( const int byteGroups )
+int BinFileView::preFitWidth( const int byteGroups ) const
 {
     int newHexAreaWidth = byteGroups * _groupWidth + (byteGroups - 1) * _groupGap + _rightMargin;
     int newAsciiAreaWidth = byteGroups * BinFileView::bytesPerGroup * fontMetrics().averageCharWidth() + _leftMargin + _rightMargin;

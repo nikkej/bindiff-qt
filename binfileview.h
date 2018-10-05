@@ -71,7 +71,7 @@ protected:
 private: // Methods
     void calculateNumOfByteGroups();
     void adjust( const int newByteGroups = 0 );
-    int preFitWholeLine( const int );
+    int preFitWidth( const int ) const;
     void drawEmptyViewInstructions( QPainter& );
 
 private: // No copying
