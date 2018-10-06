@@ -33,7 +33,6 @@ class MainWindow;
 }
 class QFile;
 class BinFileView;
-//class QByteArray;
 
 struct FileModel
 {
@@ -47,12 +46,12 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow( QWidget* parent = 0 );
+    explicit MainWindow( QWidget* parent = nullptr );
     ~MainWindow();
 
 private slots:
     void open( BinFileView* );
-    void open( const QString&, BinFileView* view = 0 );
+    void open( const QString&, BinFileView* view = nullptr );
     void updateDiff( BinFileView* );
     void on_actionE_xit_triggered();
 
@@ -64,7 +63,7 @@ private: // Data
     Ui::MainWindow* ui;
     QMap<BinFileView* , struct FileModel> _files;
     uchar* _diffMap;
-    size_t _diffMapSize;
+    qint64 _diffMapSize;
 };
 
 #endif // MAINWINDOW_H

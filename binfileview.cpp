@@ -41,8 +41,8 @@ BinFileView::BinFileView( QWidget* parent )
     : QAbstractScrollArea( parent ),
       _contextMenu( new QMenu( this ) ),
       _contextAction( new QAction( tr( "&Open" ), this ) ),
-      _data( NULL ),
-      _colorData( NULL ),
+      _data( nullptr ),
+      _colorData( nullptr ),
       _size( 0 ),
       _upperMask( 0xffff0000LL ),
       _lowerMask( 0x0000ffffLL ),
@@ -118,7 +118,7 @@ void BinFileView::setData( const uchar* data, const qint64 size )
     if( oldAddressChars < _addressChars )
         emit defaultVisualsChanged( this );
 
-    _lineCount = (int)( _size / _bytesPerLine );
+    _lineCount = static_cast<int>( _size / _bytesPerLine );
     if( _size % _bytesPerLine )
         _lineCount += 1;
 
@@ -144,7 +144,7 @@ void BinFileView::setAddressCharacters( const int chars )
     // Calculate upper and lower half masks
     _lowerMask = 0xf;
     for( int t( 1 ); t < _addressChars / 2; t++ ) {
-        _lowerMask |= (qint64)0xf << (4 * t);
+        _lowerMask |= static_cast<qint64>( 0xf << (4 * t) );
     }
     _upperMask = _lowerMask << (4 * _addressChars / 2);
 
@@ -153,7 +153,7 @@ void BinFileView::setAddressCharacters( const int chars )
 
 qint64 BinFileView::addressAddend()
 {
-    return (qint64)verticalScrollBar()->sliderPosition() * _bytesPerLine;
+    return static_cast<qint64>( verticalScrollBar()->sliderPosition() * _bytesPerLine );
 }
 
 void BinFileView::showContextMenu( const QPoint& pos )
@@ -209,7 +209,7 @@ void BinFileView::resizeEvent( QResizeEvent* )
 
     verticalScrollBar()->setRange( 0, _lineCount - _linesOnViewPort );
     verticalScrollBar()->setPageStep( _linesOnViewPort );
-    verticalScrollBar()->setSliderPosition( _addend / _bytesPerLine );
+    verticalScrollBar()->setSliderPosition( static_cast<int>( _addend / _bytesPerLine ) );
 
     emit fileViewContentChanged( this );
 }
@@ -231,7 +231,7 @@ void BinFileView::paintEvent( QPaintEvent* event )
         int yIncr = fontMetrics().height();
         int yPos = yIncr;
         for( qint64 row( 0 ); row < qMin( _linesOnViewPort, _lineCount ); row++, yPos += yIncr ) {
-            qint64 addr = row * (qint64)_bytesPerLine + _addend;
+            qint64 addr = row * static_cast<qint64>( _bytesPerLine ) + _addend;
             QString addrString = QString( "%1:%2" ).arg( ( addr & _upperMask ) >> (4 * _addressChars / 2), _addressChars / 2, 16, QChar( '0' ) ).toUpper() \
                                                    .arg( addr & _lowerMask, _addressChars / 2, 16, QChar( '0' ) ).toUpper();
 
@@ -241,7 +241,7 @@ void BinFileView::paintEvent( QPaintEvent* event )
             painter.setPen( viewport()->palette().color( QPalette::WindowText ) );
 
             int xPos = _addressAreaWidth + _leftMargin - xOffset;
-            for( qint64 b( 0 ); b < qMin( (qint64)_bytesPerLine, _size - addr ); b++, xPos += _byteWidth ) {
+            for( qint64 b( 0 ); b < qMin( static_cast<qint64>( _bytesPerLine ), _size - addr ); b++, xPos += _byteWidth ) {
                 uchar binByte = *( _data + b + addr );
                 QString byte = QString( "%1" ).arg( binByte, 2, 16, QChar( '0' ) ).toUpper();
                 if( b > 0 && b % BinFileView::bytesPerGroup == 0 )
@@ -295,7 +295,7 @@ void BinFileView::adjust( const int newbyteGroups )
         _bytesPerLine = _byteGroups * BinFileView::bytesPerGroup;
     }
 
-    _lineCount = (int)( _size / _bytesPerLine );
+    _lineCount = static_cast<int>( _size / _bytesPerLine );
     if( _size % _bytesPerLine )
         _lineCount += 1;
 

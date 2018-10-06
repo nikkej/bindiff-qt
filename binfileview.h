@@ -40,7 +40,7 @@ public:
         minimumOfLines = 16
     };
 
-    BinFileView( QWidget* parent = 0 );
+    BinFileView( QWidget* parent = nullptr );
     virtual ~BinFileView();
 
     virtual QSize minimumSizeHint() const;

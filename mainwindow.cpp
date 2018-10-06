@@ -28,12 +28,11 @@
 #include <QFileDialog>
 #include <QScrollBar>
 #include <sys/mman.h>
-//#include <ctype.h>
 
 MainWindow::MainWindow( QWidget *parent ) :
     QMainWindow( parent ),
     ui( new Ui::MainWindow ),
-    _diffMap( NULL ),
+    _diffMap( nullptr ),
     _diffMapSize( 0 )
 {
     ui->setupUi( this );
@@ -107,7 +106,7 @@ MainWindow::~MainWindow()
         }
     }
     if( _diffMap )
-        ::munmap( _diffMap, _diffMapSize );
+        ::munmap( _diffMap, static_cast<size_t>( _diffMapSize ) );
 }
 
 void MainWindow::open( BinFileView* view )
@@ -147,7 +146,7 @@ void MainWindow::open( const QString& fileName , BinFileView* view )
         }
         if( _files.size() == 2 ) {
             if( _diffMap )
-                ::munmap( _diffMap, _diffMapSize );
+                ::munmap( _diffMap, static_cast<size_t>( _diffMapSize ) );
 
             auto f = _files.begin();
             qint64 size1 = (*f)._file->size();
@@ -155,13 +154,13 @@ void MainWindow::open( const QString& fileName , BinFileView* view )
             _diffMapSize = qMax( size1, size2 );
 
             // Qt's QFileDevice::map doesn't eat original mmap flags, --> use 'real stuff' here!
-            _diffMap = (uchar*)::mmap( 0, _diffMapSize, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0 );
+            _diffMap = static_cast<uchar*>( ::mmap( nullptr, static_cast<size_t>( _diffMapSize ), PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0 ) );
 
             if( !_diffMap ) {
                 qWarning() << "Mapping failed!!!!";
             }
             else {
-                updateDiff( NULL );
+                updateDiff( nullptr );
                 QList<BinFileView*> views = _files.keys();
                 for( auto v : views )
                     v->setColoringData( _diffMap );
