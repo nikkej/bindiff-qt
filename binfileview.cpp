@@ -153,7 +153,7 @@ void BinFileView::setAddressCharacters( const int chars )
 
 qint64 BinFileView::addressAddend()
 {
-    return static_cast<qint64>( verticalScrollBar()->sliderPosition() * _bytesPerLine );
+    return static_cast<qint64>( verticalScrollBar()->sliderPosition() ) * _bytesPerLine;
 }
 
 void BinFileView::showContextMenu( const QPoint& pos )
