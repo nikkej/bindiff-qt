@@ -61,26 +61,23 @@ BinFileView::BinFileView( QWidget* parent )
       _hexAreaWidth( 0 ),
       _asciiAreaWidth( 0 ),
       _groupGap( 0 ),
-      _widgetFrameWidth( 0 )
+      _vscrollBarWidth( 0 )
 {
     _contextMenu->addAction( _contextAction );
     connect( _contextAction, &QAction::triggered, [=](){ emit fileOpenRequested( this ); } );
     connect( this, SIGNAL( customContextMenuRequested( const QPoint& ) ), \
              this, SLOT( showContextMenu( const QPoint& ) ) );
+    setSizeAdjustPolicy( QAbstractScrollArea::AdjustToContents );
+    setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding );
 }
 
 BinFileView::~BinFileView()
 {
 }
 
-QSize BinFileView::minimumSizeHint() const
+QSize BinFileView::viewportSizeHint() const
 {
-    return( QSize( preFitWidth( BinFileView::minimumOfByteGroups ) + _widgetFrameWidth * 2, fontMetrics().height() * BinFileView::minimumOfLines ) );
-}
-
-QSize BinFileView::sizeHint() const
-{
-    return( QSize( preFitWidth( _byteGroups ) + _widgetFrameWidth * 2, fontMetrics().height() * _linesOnViewPort ) );
+    return( QSize( preFitWidth( BinFileView::minimumOfByteGroups ) + _vscrollBarWidth, fontMetrics().height() * BinFileView::minimumOfLines ) );
 }
 
 void BinFileView::setFont( QFont font )
@@ -109,7 +106,7 @@ void BinFileView::setData( const uchar* data, const qint64 size )
     // parameters affecting view port width & data layout...
     int oldAddressChars = _addressChars;
 
-    if( _size > INT_MAX )
+    if( _size > UINT_MAX )
         setAddressCharacters( 16 );
     else
         setAddressCharacters( 8 );
@@ -196,9 +193,8 @@ void BinFileView::resizeEvent( QResizeEvent* )
 {
     _linesOnViewPort = ( viewport()->height() - _bottomMargin ) / fontMetrics().height();
 
-    if( _widgetFrameWidth != ( frameSize().rwidth() - viewport()->width() ) / 2 ) {
-        qWarning() << __FUNCTION__ << "frame size: " << frameSize().rwidth() << ", viewport width: " << viewport()->width();
-        _widgetFrameWidth = ( frameSize().rwidth() - viewport()->width() ) / 2;
+    if( _vscrollBarWidth != verticalScrollBar()->width() ) {
+        _vscrollBarWidth  = verticalScrollBar()->width();
         updateGeometry();
     }
 

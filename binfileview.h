@@ -43,8 +43,7 @@ public:
     BinFileView( QWidget* parent = nullptr );
     virtual ~BinFileView();
 
-    virtual QSize minimumSizeHint() const;
-    virtual QSize sizeHint() const;
+    virtual QSize viewportSizeHint() const;
     virtual void setFont( QFont );
     const uchar* data();
     void setData( const uchar*, const qint64 );
@@ -107,8 +106,8 @@ private: // Data
     int     _hexAreaWidth;
     int     _asciiAreaWidth;
     int     _groupGap;
-    // To fine tune widget paint area
-    int     _widgetFrameWidth;
+    // To fine tune widget viewport minimum size
+    int     _vscrollBarWidth;
 };
 
 #endif // BINFILEVIEW_H
