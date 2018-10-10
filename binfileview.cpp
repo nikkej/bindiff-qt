@@ -77,7 +77,8 @@ BinFileView::~BinFileView()
 
 QSize BinFileView::viewportSizeHint() const
 {
-    return( QSize( preFitWidth( BinFileView::minimumOfByteGroups ) + _vscrollBarWidth, fontMetrics().height() * BinFileView::minimumOfLines ) );
+    return( QSize( preFitWidth( BinFileView::minimumOfByteGroups ) + _vscrollBarWidth,
+                   fontMetrics().height() * BinFileView::minimumOfLines + _bottomMargin ) );
 }
 
 void BinFileView::setFont( QFont font )
@@ -299,10 +300,11 @@ void BinFileView::adjust( const int newbyteGroups )
                                         .arg( 0, _addressChars / 2, 16, QChar( '0' ) );
     QString byte = QString( "%1" ).arg( 0, 2, 16, QChar( '0' ) );
 
-    // Set all margins to half of a character width
+    // Set side margins to half of a character width,
+    // bottom margin half of font height
     _leftMargin = fontMetrics().averageCharWidth() / 2;
     _rightMargin = _leftMargin;
-    _bottomMargin = _leftMargin;
+    _bottomMargin = fontMetrics().height() / 2;
     _byteWidth = fontMetrics().width( byte ) + _leftMargin;
     _addressAreaWidth = fontMetrics().width( address ) + _leftMargin + _rightMargin;
     _groupGap = fontMetrics().averageCharWidth();
